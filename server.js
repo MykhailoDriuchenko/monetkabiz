@@ -39,9 +39,20 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({ storage, fileFilter });
 
 // ===== Подключение к Mongo =====
-mongoose.connect(process.env.MONGO_URI)
-    .then(() => console.log("MongoDB connected"))
-    .catch(err => console.error(err));
+if (!process.env.MONGO_URI) {
+    console.error("❌ Ошибка: переменная окружения MONGO_URI не найдена!");
+    process.exit(1); // завершаем процесс, чтобы не работать без БД
+}
+
+mongoose.connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+})
+    .then(() => console.log("✅ MongoDB connected"))
+    .catch(err => {
+        console.error("❌ Ошибка подключения к MongoDB:", err.message);
+        process.exit(1);
+    });
 
 // ===== Middleware =====
 app.use(express.static(path.join(__dirname, "public")));
