@@ -1,0 +1,144 @@
+<%- include("partials/header", { title: "Редактировать объявление" }) %>
+
+    <div class="content-wrapper">
+        <h1>Редактировать объявление</h1>
+
+        <form action="/ad/<%= ad._id %>?_method=PUT" method="post" enctype="multipart/form-data" class="edit-form">
+            <label>Название</label>
+            <input type="text" name="title" value="<%= ad.title %>" required>
+
+            <label>Цена</label>
+            <input type="number" name="price" value="<%= ad.price %>" required>
+
+            <label>Описание</label>
+            <textarea name="description" required><%= ad.description %></textarea>
+
+            <label>Текущие изображения</label>
+            <div class="current-images">
+                <% if (ad.images && ad.images.length > 0) { %>
+                    <% ad.images.forEach((img, index) => { %>
+                        <div class="image-wrapper">
+                            <img src="/uploads/<%= img %>" class="ad-image">
+                            <label class="delete-checkbox">
+                            <input type="checkbox" name="deleteImages" value="<%= index %>"> Удалить
+                        </label>
+                        </div>
+                        <% }) %>
+                            <% } else { %>
+                                <p>Изображений нет</p>
+                                <% } %>
+            </div>
+
+            <label>Добавить новые изображения</label>
+            <input type="file" name="images" multiple accept="image/*">
+            <div id="new-preview" class="preview-images"></div>
+
+            <button type="submit">Сохранить</button>
+        </form>
+    </div>
+
+    <style>
+        .content-wrapper {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 10px;
+        }
+        
+        .edit-form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .edit-form label {
+            font-weight: bold;
+        }
+        
+        .edit-form input[type="text"],
+        .edit-form input[type="number"],
+        .edit-form textarea,
+        .edit-form input[type="file"] {
+            padding: 8px;
+            border-radius: 5px;
+            border: none;
+            background-color: #2a2a2a;
+            color: #e0e0e0;
+            font-size: 14px;
+        }
+        
+        .edit-form textarea {
+            min-height: 80px;
+        }
+        
+        .edit-form button {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4b5dff4d;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .edit-form button:hover {
+            background-color: #ff6b7a;
+        }
+        
+        .current-images,
+        .preview-images {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .image-wrapper {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .image-wrapper img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 5px;
+            border: 1px solid #444;
+        }
+        
+        .delete-checkbox {
+            margin-top: 5px;
+            font-size: 12px;
+            color: #f55;
+            cursor: pointer;
+        }
+        
+        .preview-images img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 5px;
+            border: 1px solid #555;
+        }
+    </style>
+
+    <script>
+        const imagesInput = document.querySelector('input[name="images"]');
+        const preview = document.getElementById('new-preview');
+
+        imagesInput.addEventListener('change', () => {
+            preview.innerHTML = '';
+            Array.from(imagesInput.files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    preview.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            });
+        });
+    </script>
+
+    <%- include("partials/footer") %>

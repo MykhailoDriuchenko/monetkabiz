@@ -1,0 +1,67 @@
+<div class="ad-gallery">
+    <div class="main-image">
+        <% if (ad.images && ad.images.length > 0) { %>
+            <img id="currentImage" src="/uploads/<%= ad.images[0] %>" alt="Фото объявления">
+            <% } else { %>
+                <img id="currentImage" src="/uploads/no-image.png" alt="Фото отсутствует">
+                <% } %>
+    </div>
+    <div class="thumbnails">
+        <% if (ad.images && ad.images.length > 0) { %>
+            <% ad.images.forEach((img, index) => { %>
+                <img class="thumb <% if(index === 0){ %>active<% } %>" src="/uploads/<%= img %>" alt="Фото <%= index+1 %>">
+                <% }) %>
+                    <% } %>
+    </div>
+</div>
+
+<script>
+    const mainImage = document.getElementById("currentImage");
+    const thumbs = document.querySelectorAll(".thumbnails img");
+
+    thumbs.forEach(thumb => {
+        thumb.addEventListener("click", () => {
+            mainImage.src = thumb.src;
+            thumbs.forEach(t => t.classList.remove("active"));
+            thumb.classList.add("active");
+        });
+    });
+</script>
+
+<style>
+    .ad-gallery {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .main-image img {
+        width: 100%;
+        max-height: 400px;
+        object-fit: contain;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    }
+    
+    .thumbnails {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+    
+    .thumbnails img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 8px;
+        cursor: pointer;
+        border: 2px solid transparent;
+        transition: transform 0.3s, border-color 0.3s;
+    }
+    
+    .thumbnails img.active,
+    .thumbnails img:hover {
+        border-color: #4b5dff;
+        transform: scale(1.1);
+    }
+</style>

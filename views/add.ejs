@@ -1,0 +1,92 @@
+<div class="content-wrapper">
+    <h1>Добавить объявление</h1>
+
+    <form action="/add" method="post" enctype="multipart/form-data" class="add-form">
+        <input type="text" name="title" placeholder="Название" required>
+        <input type="number" name="price" placeholder="Цена" required>
+        <textarea name="description" placeholder="Описание" required></textarea>
+
+        <label>Выберите изображения (можно несколько)</label>
+        <input type="file" name="images" accept="image/*" multiple>
+        <input type="file" name="images" accept="image/*" multiple>
+        <input type="file" name="images" accept="image/*" multiple>
+        <input type="file" name="images" accept="image/*" multiple>
+        <input type="file" name="images" accept="image/*" multiple>
+
+        <div id="preview" class="preview-images"></div>
+
+        <button type="submit">Добавить</button>
+    </form>
+</div>
+
+<script>
+    const imagesInput = document.querySelector('input[name="images"]');
+    const preview = document.getElementById('preview');
+
+    imagesInput.addEventListener('change', () => {
+        preview.innerHTML = ''; // очищаем старые превью
+        Array.from(imagesInput.files).forEach(file => {
+            const reader = new FileReader();
+            reader.onload = e => {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.className = 'preview-img';
+                preview.appendChild(img);
+            };
+            reader.readAsDataURL(file);
+        });
+    });
+</script>
+
+<style>
+    .add-form {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        background: #1e1e1e;
+        padding: 20px;
+        border-radius: 8px;
+        max-width: 500px;
+        margin: 0 auto;
+    }
+    
+    .add-form input,
+    .add-form textarea {
+        padding: 8px;
+        border-radius: 5px;
+        border: none;
+        font-size: 14px;
+        background-color: #2a2a2a;
+        color: #e0e0e0;
+    }
+    
+    .add-form button {
+        background-color: #4b5dff4d;
+        color: #fff;
+        cursor: pointer;
+        padding: 10px;
+        font-size: 16px;
+        border-radius: 5px;
+        border: none;
+        transition: background 0.3s;
+    }
+    
+    .add-form button:hover {
+        background-color: #ff6b7a;
+    }
+    
+    .preview-images {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        margin-top: 10px;
+    }
+    
+    .preview-img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 5px;
+        border: 1px solid #444;
+    }
+</style>

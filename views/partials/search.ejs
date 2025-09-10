@@ -1,0 +1,141 @@
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
+
+<form action="/" method="get" class="search-bar" id="searchForm">
+    <div class="search-input-wrapper">
+        <input type="text" name="q" id="searchInput" placeholder="Поиск объявлений..." autocomplete="off" value="<%= typeof q !== 'undefined' ? q : '' %>">
+        <div id="suggestions" class="suggestions-box"></div>
+    </div>
+    <button type="submit" id="searchBtn">Поиск</button>
+</form>
+
+<style>
+    .search-bar {
+        display: flex;
+        align-items: center;
+        width: 34%;
+        gap: 10px;
+    }
+    
+    .search-input-wrapper {
+        position: relative;
+        flex: 1;
+        background: #1e1e1e;
+        padding: 6px 12px;
+        border-radius: 8px;
+        border: 1px solid transparent;
+    }
+    
+    .search-bar input {
+        background: transparent;
+        border: none;
+        outline: none;
+        color: #e0e0e0;
+        padding: 6px 8px;
+        width: 100%;
+    }
+    
+    .search-bar button {
+        background: #6aa8d1;
+        border: none;
+        color: white;
+        padding: 12px 14px;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+    
+    .search-bar button:hover {
+        background: #5593b7;
+    }
+    
+    .suggestions-box {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: #1e1e1e;
+        border: 1px solid #444;
+        border-top: none;
+        border-radius: 0 0 6px 6px;
+        max-height: 200px;
+        overflow-y: auto;
+        display: none;
+        z-index: 1000;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+    
+    .search-input-wrapper:focus-within {
+        border-color: #6aa8d1;
+    }
+    
+    .suggestions-box div {
+        padding: 8px;
+        cursor: pointer;
+    }
+    
+    .suggestions-box div:hover {
+        background: #333;
+    }
+</style>
+
+<script>
+    let fuse;
+    let allAds = [];
+
+    // Загружаем все объявления один раз
+    fetch("/all_ads_json")
+        .then(res => res.json())
+        .then(data => {
+            allAds = data;
+            fuse = new Fuse(allAds, {
+                keys: ["title"],
+                threshold: 0.3
+            });
+        });
+
+    const input = document.getElementById("searchInput");
+    const suggestionsBox = document.getElementById("suggestions");
+
+    let debounceTimer;
+    input.addEventListener("input", () => {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+            const query = input.value.trim();
+            showSuggestions(query);
+        }, 200);
+    });
+
+    function showSuggestions(query) {
+        suggestionsBox.innerHTML = "";
+        if (!query || !fuse) {
+            suggestionsBox.style.display = "none";
+            return;
+        }
+
+        const results = fuse.search(query, {
+            limit: 10
+        });
+
+        if (results.length === 0) {
+            suggestionsBox.style.display = "none";
+            return;
+        }
+
+        results.forEach(r => {
+            const ad = r.item;
+            const div = document.createElement("div");
+            div.textContent = ad.title + (ad.price ? ` — ${ad.price}₴` : "");
+            div.addEventListener("click", () => {
+                window.location.href = `/ad/${ad._id}`;
+            });
+            suggestionsBox.appendChild(div);
+        });
+
+        suggestionsBox.style.display = "block";
+    }
+
+    document.addEventListener("click", (e) => {
+        if (!input.contains(e.target) && !suggestionsBox.contains(e.target)) {
+            suggestionsBox.style.display = "none";
+        }
+    });
+</script>

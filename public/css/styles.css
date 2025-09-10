@@ -1,0 +1,321 @@
+/* =========================
+   Общие стили
+========================= */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+    background-color: #121212;
+    color: #fff;
+    line-height: 1.6;
+}
+
+a {
+    color: #4b5dff;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #ff6b7a;
+}
+
+
+/* =========================
+   Контейнер и основной блок
+========================= */
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.content-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+
+/* =========================
+   Карточки объявлений
+========================= */
+
+.ad-card {
+    background: #1e1e1e;
+    border-radius: 12px;
+    width: 300px;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s, box-shadow 0.3s;
+    display: flex;
+    flex-direction: column;
+}
+
+.ad-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+}
+
+.ad-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.ad-card h3 {
+    margin: 10px;
+    font-size: 20px;
+}
+
+.ad-card p {
+    margin: 10px;
+    font-size: 14px;
+    color: #ccc;
+}
+
+.ad-card .price {
+    margin: 10px;
+    font-weight: bold;
+    color: #4b5dff;
+}
+
+.ad-card .btn {
+    margin: 10px;
+    padding: 10px 15px;
+    background: #4b5dff;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s;
+    text-align: center;
+}
+
+.ad-card .btn:hover {
+    background: #ff6b7a;
+}
+
+
+/* =========================
+   Избранное (сердечки)
+========================= */
+
+.favorite-form {
+    margin: 10px;
+}
+
+.favorite-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.favorite-btn:hover {
+    transform: scale(1.2);
+}
+
+.favorite-btn svg path {
+    fill: #ccc;
+    transition: fill 0.3s;
+}
+
+.favorite-btn.active svg path {
+    fill: red;
+}
+
+
+/* =========================
+   Поиск
+========================= */
+
+.search-bar {
+    display: flex;
+    width: 100%;
+    max-width: 600px;
+    margin: 20px auto;
+    gap: 10px;
+}
+
+.search-bar input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    background: #2a2a2a;
+    color: #fff;
+}
+
+.search-bar input::placeholder {
+    color: #aaa;
+}
+
+.search-bar button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 8px;
+    background: #4b5dff;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.search-bar button:hover {
+    background: #ff6b7a;
+}
+
+.suggestions-box {
+    background: #1e1e1e;
+    border-radius: 8px;
+    max-height: 150px;
+    overflow-y: auto;
+    position: absolute;
+    width: 100%;
+    z-index: 10;
+}
+
+.suggestions-box div {
+    padding: 8px;
+    cursor: pointer;
+}
+
+.suggestions-box div:hover {
+    background: #4b5dff;
+    color: #fff;
+}
+
+
+/* =========================
+   Логин и регистрация
+========================= */
+
+.auth-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+}
+
+.auth-form {
+    background: #1e1e1e;
+    padding: 40px 30px;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    text-align: center;
+}
+
+.auth-form h2 {
+    margin-bottom: 20px;
+}
+
+.auth-form input,
+.auth-form button {
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    border: none;
+    font-size: 15px;
+}
+
+.auth-form input {
+    background-color: #2a2a2a;
+    color: #fff;
+}
+
+.auth-form input::placeholder {
+    color: #aaa;
+}
+
+.auth-form button {
+    background-color: #4b5dff;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.auth-form button:hover {
+    background-color: #ff6b7a;
+}
+
+
+/* =========================
+   Футер
+========================= */
+
+footer {
+    background-color: #1e1e1e;
+    text-align: center;
+    padding: 20px;
+    margin-top: 40px;
+    color: #aaa;
+}
+
+footer a {
+    color: #4b5dff;
+}
+
+footer a:hover {
+    color: #ff6b7a;
+}
+
+
+/* =========================
+   Админка (формы и таблицы)
+========================= */
+
+.admin-form input,
+.admin-form textarea,
+.admin-form select,
+.admin-form button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    border: none;
+    background-color: #2a2a2a;
+    color: #fff;
+}
+
+.admin-form button {
+    background-color: #4b5dff;
+}
+
+.admin-form button:hover {
+    background-color: #ff6b7a;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.admin-table th,
+.admin-table td {
+    border: 1px solid #333;
+    padding: 10px;
+    text-align: left;
+}
+
+.admin-table th {
+    background-color: #2a2a2a;
+}
+
+.admin-table tr:nth-child(even) {
+    background-color: #1e1e1e;
+}
+
+.admin-table tr:hover {
+    background-color: #333;
+}

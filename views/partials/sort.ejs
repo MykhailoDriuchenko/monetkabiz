@@ -1,0 +1,51 @@
+<div class="sort-wrapper">
+    <span>Сортировать по цене:</span>
+    <div class="sort-buttons">
+        <a href="/?<%= query ? 'q=' + encodeURIComponent(query) + '&' : '' %>sort=asc" class="sort-btn <%= sort === 'asc' ? 'active' : '' %>">Дешевые → Дорогие</a>
+        <a href="/?<%= query ? 'q=' + encodeURIComponent(query) + '&' : '' %>sort=desc" class="sort-btn <%= sort === 'desc' ? 'active' : '' %>">Дорогие → Дешевые</a>
+    </div>
+</div>
+
+<style>
+    .sort-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin: 15px 0;
+        flex-wrap: wrap;
+    }
+    
+    .sort-wrapper span {
+        font-size: 16px;
+        color: #ccc;
+    }
+    
+    .sort-buttons {
+        display: flex;
+        gap: 8px;
+    }
+    
+    .sort-btn {
+        text-decoration: none;
+        padding: 8px 14px;
+        border-radius: 8px;
+        background: #2a2a2a;
+        color: #e0e0e0;
+        font-size: 14px;
+        transition: background 0.3s, color 0.3s, transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .sort-btn:hover {
+        background: #6aa8d1;
+        color: #fff;
+        transform: scale(1.05);
+    }
+    
+    .sort-btn.active {
+        background: #6aa8d1;
+        color: #fff;
+        font-weight: bold;
+        box-shadow: 0 0 10px #6aa8d1;
+        transform: scale(1.08);
+    }
+</style>

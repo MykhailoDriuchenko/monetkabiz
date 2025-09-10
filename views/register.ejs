@@ -1,0 +1,218 @@
+<%- include("partials/header") %>
+
+    <div class="auth-wrapper">
+        <div class="auth-form">
+            <h2>Регистрация</h2>
+            <form action="/register" method="POST" id="registerForm">
+                <input type="text" name="username" placeholder="Логин" required>
+
+                <input type="password" name="password" id="password" placeholder="Пароль" required>
+                <input type="password" name="confirm_password" id="confirm_password" placeholder="Подтверждение пароля" required>
+
+                <!-- Индикатор силы пароля -->
+                <div id="password-strength-container">
+                    <div id="strength-bar-container">
+                        <div id="strength-bar"></div>
+                    </div>
+                    <span id="strength-text"></span>
+                    <ul id="password-requirements">
+                        <li id="length" class="invalid">Не менее 8 символов</li>
+                        <li id="uppercase" class="invalid">Заглавная буква</li>
+                        <li id="lowercase" class="invalid">Строчная буква</li>
+                        <li id="number" class="invalid">Цифра</li>
+                        <li id="special" class="invalid">Спецсимвол (@$!%*?&)</li>
+                    </ul>
+                </div>
+
+                <button type="submit">Зарегистрироваться</button>
+            </form>
+            <p>Уже есть аккаунт? <a href="/login">Войти</a></p>
+            <p id="errorMessage" style="color: #ff6b7a; display: none;"></p>
+        </div>
+    </div>
+
+    <style>
+        .auth-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 80vh;
+        }
+        
+        .auth-form {
+            background: #1e1e1e;
+            padding: 40px 30px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+        
+        .auth-form h2 {
+            color: #fff;
+            margin-bottom: 25px;
+            font-size: 26px;
+        }
+        
+        .auth-form input,
+        .auth-form button {
+            width: 100%;
+            padding: 14px 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border: none;
+            font-size: 15px;
+            box-sizing: border-box;
+        }
+        
+        .auth-form input {
+            background-color: #2a2a2a;
+            color: #fff;
+        }
+        
+        .auth-form input::placeholder {
+            color: #aaa;
+        }
+        
+        .auth-form button {
+            background-color: #4b5dff;
+            color: #fff;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .auth-form button:hover {
+            background-color: #ff6b7a;
+        }
+        
+        .auth-form p {
+            margin-top: 15px;
+            color: #ccc;
+            font-size: 14px;
+        }
+        
+        .auth-form p a {
+            color: #4b5dff;
+            text-decoration: none;
+        }
+        
+        .auth-form p a:hover {
+            text-decoration: underline;
+        }
+        /* ===== Индикатор пароля ===== */
+        
+        #password-strength-container {
+            margin-top: 5px;
+            text-align: left;
+        }
+        
+        #strength-bar-container {
+            width: 100%;
+            height: 8px;
+            background: #444;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 5px;
+        }
+        
+        #strength-bar {
+            height: 100%;
+            width: 0;
+            border-radius: 4px;
+            background: linear-gradient(90deg, red, orange, yellow, #76d5f1);
+            transition: width 0.4s ease;
+        }
+        
+        #strength-text {
+            font-size: 12px;
+            color: #e0e0e0;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        #password-requirements {
+            font-size: 12px;
+            padding-left: 15px;
+            margin: 0;
+            list-style-type: disc;
+            color: #e0e0e0;
+        }
+        
+        #password-requirements li.valid {
+            color: #76d5f1;
+        }
+        
+        #password-requirements li.invalid {
+            color: #ff6b7a;
+        }
+    </style>
+
+    <script>
+        const form = document.getElementById('registerForm');
+        const errorMessage = document.getElementById('errorMessage');
+        const passwordInput = document.getElementById("password");
+        const confirmInput = document.getElementById("confirm_password");
+        const strengthBar = document.getElementById("strength-bar");
+        const strengthText = document.getElementById("strength-text");
+
+        const requirements = {
+            length: document.getElementById("length"),
+            uppercase: document.getElementById("uppercase"),
+            lowercase: document.getElementById("lowercase"),
+            number: document.getElementById("number"),
+            special: document.getElementById("special")
+        };
+
+        // Проверка силы пароля
+        function checkPasswordStrength(password) {
+            let score = 0;
+
+            requirements.length.className = password.length >= 8 ? "valid" : "invalid";
+            requirements.uppercase.className = /[A-Z]/.test(password) ? "valid" : "invalid";
+            requirements.lowercase.className = /[a-z]/.test(password) ? "valid" : "invalid";
+            requirements.number.className = /\d/.test(password) ? "valid" : "invalid";
+            requirements.special.className = /[@$!%*?&]/.test(password) ? "valid" : "invalid";
+
+            if (password.length >= 8) score++;
+            if (/[A-Z]/.test(password)) score++;
+            if (/[a-z]/.test(password)) score++;
+            if (/\d/.test(password)) score++;
+            if (/[@$!%*?&]/.test(password)) score++;
+
+            const percentage = (score / 5) * 100;
+            strengthBar.style.width = percentage + "%";
+
+            if (score <= 2) strengthText.textContent = "Слабый пароль";
+            else if (score <= 4) strengthText.textContent = "Средний пароль";
+            else strengthText.textContent = "Сильный пароль";
+
+            return score;
+        }
+
+        // Проверяем пароль при вводе
+        passwordInput.addEventListener("input", () => {
+            checkPasswordStrength(passwordInput.value);
+        });
+
+        // Отправка формы
+        form.addEventListener('submit', (e) => {
+            const password = passwordInput.value;
+            const confirm = confirmInput.value;
+            const strengthScore = checkPasswordStrength(password);
+
+            if (password !== confirm) {
+                e.preventDefault();
+                errorMessage.textContent = "Пароли не совпадают!";
+                errorMessage.style.display = "block";
+            } else if (strengthScore < 3) { // минимальная сила 3 балла
+                e.preventDefault();
+                errorMessage.textContent = "Пароль слишком слабый. Сделайте его сильнее!";
+                errorMessage.style.display = "block";
+            } else {
+                errorMessage.style.display = "none";
+            }
+        });
+    </script>
+
+    <%- include("partials/footer") %>

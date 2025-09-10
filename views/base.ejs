@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+<head>
+    <meta charset="UTF-8">
+    <title>
+        <%= title || "Маркетплейс" %>
+    </title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+    <header>
+        <nav>
+            <a href="/">Главная</a>
+            <a href="/favorites">Избранное</a>
+            <% if (user) { %>
+                <span>Привет, <%= user.username %></span>
+                <a href="/logout">Выйти</a>
+                <% } else { %>
+                    <a href="/login">Войти</a>
+                    <a href="/register">Регистрация</a>
+                    <% } %>
+        </nav>
+    </header>
+
+    <% if (messages && messages.error) { %>
+        <div class="flash error">
+            <%= messages.error %>
+        </div>
+        <% } %>
+            <% if (messages && messages.success) { %>
+                <div class="flash success">
+                    <%= messages.success %>
+                </div>
+                <% } %>
+
+                    <%- body %>
+                        <!-- сюда вставляется контент страниц -->
+
+</body>
+
+</html>
