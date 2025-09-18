@@ -441,18 +441,40 @@
     }
   });
 
-  // Маска для телефона
+   // Улучшенная маска для телефона
   const phoneInput = document.querySelector('input[name="phone"]');
+  
+  phoneInput.addEventListener('focus', function() {
+    if (!this.value) {
+      this.value = '+38';
+    }
+  });
+  
   phoneInput.addEventListener('input', function(e) {
-    let value = e.target.value.replace(/\D/g, '');
-    if (value.startsWith('380')) {
-      value = '+38' + value.substring(3);
-    } else if (value.startsWith('80')) {
-      value = '+3' + value;
-    } else if (value.startsWith('0')) {
-      value = '+38' + value;
+    // Сохраняем позицию курсора
+    const cursorPosition = this.selectionStart;
+    
+    // Удаляем все нецифровые символы, кроме плюса в начале
+    let value = this.value;
+    let hasPlus = value.startsWith('+');
+    let digits = value.replace(/\D/g, '');
+    
+    // Если номер начинается с +, сохраняем его
+    if (hasPlus) {
+      digits = digits.startsWith('38') ? digits : '38' + digits;
+      value = '+' + digits;
+    } else {
+      // Если нет плюса, добавляем код Украины
+      digits = digits.startsWith('38') ? digits : '38' + digits;
+      value = '+' + digits;
     }
     
+    // Ограничиваем длину (код страны + 9 цифр)
+    if (value.length > 13) {
+      value = value.substring(0, 13);
+    }
+    
+    // Форматируем номер: +38 XXX XXX XX XX
     let formattedValue = value;
     if (value.length > 3) {
       formattedValue = value.substring(0, 3) + ' ' + value.substring(3);
@@ -463,11 +485,33 @@
     if (value.length > 9) {
       formattedValue = formattedValue.substring(0, 11) + ' ' + formattedValue.substring(11);
     }
-    if (value.length > 11) {
+    if (value.length > 12) {
       formattedValue = formattedValue.substring(0, 14) + ' ' + formattedValue.substring(14);
     }
     
-    e.target.value = formattedValue;
+    // Устанавливаем отформатированное значение
+    this.value = formattedValue;
+    
+    // Восстанавливаем позицию курсора с учетом добавленных символов
+    const addedChars = formattedValue.length - value.length;
+    this.setSelectionRange(cursorPosition + addedChars, cursorPosition + addedChars);
+  });
+  
+  phoneInput.addEventListener('keydown', function(e) {
+    // Разрешаем: backspace, delete, tab, escape, enter
+    if ([46, 8, 9, 27, 13].includes(e.keyCode) || 
+        // Разрешаем: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+        (e.keyCode == 65 && e.ctrlKey === true) || 
+        (e.keyCode == 67 && e.ctrlKey === true) ||
+        (e.keyCode == 86 && e.ctrlKey === true) ||
+        (e.keyCode == 88 && e.ctrlKey === true) ||
+        // Разрешаем: цифры, стрелки
+        (e.keyCode >= 48 && e.keyCode <= 57) ||
+        (e.keyCode >= 96 && e.keyCode <= 105) ||
+        (e.keyCode >= 37 && e.keyCode <= 40)) {
+      return;
+    }
+    e.preventDefault();
   });
 
   // Обработка ошибок загрузки изображений
