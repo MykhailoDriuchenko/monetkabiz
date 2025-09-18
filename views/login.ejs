@@ -1,86 +1,504 @@
 <%- include("partials/header") %>
 
-    <div class="auth-wrapper">
+<div class="auth-wrapper">
+    <div class="auth-container">
+        <div class="auth-illustration">
+            <div class="illustration-img">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+                    <circle cx="50" cy="35" r="20" fill="#4b5dff" opacity="0.2"/>
+                    <rect x="30" y="60" width="40" height="30" rx="5" fill="#4b5dff" opacity="0.7"/>
+                    <circle cx="40" cy="70" r="5" fill="#fff"/>
+                    <circle cx="60" cy="70" r="5" fill="#fff"/>
+                </svg>
+            </div>
+            <h2>С возвращением!</h2>
+            <p>Мы рады видеть вас снова. Войдите в свой аккаунт, чтобы продолжить.</p>
+        </div>
+        
         <div class="auth-form">
-            <h2>Вход</h2>
-            <form action="/login" method="POST">
-                <input type="text" name="username" placeholder="Логин" required>
-                <input type="password" name="password" placeholder="Пароль" required>
-                <button type="submit">Войти</button>
+            <div class="form-header">
+                <h2>Вход в аккаунт</h2>
+                <p>Введите свои учетные данные</p>
+            </div>
+            
+            <form id="loginForm" action="/login" method="POST">
+                <div class="input-group">
+                    <label for="username">Логин или email</label>
+                    <input type="text" id="username" name="username" required>
+                    <div class="input-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="password">Пароль</label>
+                    <input type="password" id="password" name="password" required>
+                    <div class="input-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                    </div>
+                    <button type="button" id="togglePassword" class="password-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                    </button>
+                </div>
+                
+                <div class="form-options">
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="remember" name="remember">
+                        <span class="checkmark"></span>
+                        Запомнить меня
+                    </label>
+                    <a href="/forgot-password" class="forgot-link">Забыли пароль?</a>
+                </div>
+                
+                <button type="submit" class="submit-btn">
+                    <span class="btn-text">Войти</span>
+                    <div class="btn-loader">
+                        <svg viewBox="0 0 50 50">
+                            <circle cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
+                        </svg>
+                    </div>
+                </button>
             </form>
-            <p>Нет аккаунта? <a href="/register">Зарегистрироваться</a></p>
+            
+            <p class="auth-redirect">Нет аккаунта? <a href="/register">Зарегистрироваться</a></p>
         </div>
     </div>
+</div>
 
-    <style>
-        .auth-wrapper {
+<style>
+    :root {
+        --primary: #4b5dff;
+        --primary-hover: #3a4dea;
+        --secondary: #ff6b7a;
+        --text: #e1e1e1;
+        --text-light: #a0a0a0;
+        --bg-dark: #1a1a1a;
+        --bg-card: #242424;
+        --bg-input: #2e2e2e;
+        --border: #3d3d3d;
+        --error: #ff4757;
+        --success: #2ed573;
+    }
+    
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+    
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #121212;
+        color: var(--text);
+        line-height: 1.6;
+    }
+    
+    .auth-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 20px;
+    }
+    
+    .auth-container {
+        display: flex;
+        background: var(--bg-card);
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+        max-width: 950px;
+        width: 100%;
+    }
+    
+    .auth-illustration {
+        flex: 1;
+        background: linear-gradient(135deg, var(--primary), #6c5ce7);
+        padding: 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        color: white;
+        display: none; /* Скрыто по умолчанию для мобильных */
+    }
+    
+    .illustration-img {
+        margin-bottom: 30px;
+    }
+    
+    .illustration-img svg {
+        width: 180px;
+        height: 180px;
+    }
+    
+    .auth-illustration h2 {
+        font-size: 28px;
+        margin-bottom: 15px;
+        font-weight: 600;
+    }
+    
+    .auth-illustration p {
+        opacity: 0.9;
+        max-width: 300px;
+    }
+    
+    .auth-form {
+        flex: 1;
+        padding: 40px 30px;
+        width: 100%;
+    }
+    
+    .form-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    
+    .form-header h2 {
+        font-size: 26px;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #fff;
+    }
+    
+    .form-header p {
+        color: var(--text-light);
+        font-size: 15px;
+    }
+    
+    .input-group {
+        position: relative;
+        margin-bottom: 20px;
+    }
+    
+    .input-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 14px;
+        color: var(--text-light);
+        font-weight: 500;
+    }
+    
+    .input-group input {
+        width: 100%;
+        padding: 14px 15px 14px 45px;
+        background-color: var(--bg-input);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        color: var(--text);
+        font-size: 15px;
+        transition: all 0.3s;
+    }
+    
+    .input-group input:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(75, 93, 255, 0.2);
+    }
+    
+    .input-icon {
+        position: absolute;
+        left: 15px;
+        top: 39px;
+        color: var(--text-light);
+    }
+    
+    .password-toggle {
+        position: absolute;
+        right: 15px;
+        top: 39px;
+        background: none;
+        border: none;
+        color: var(--text-light);
+        cursor: pointer;
+        padding: 0;
+    }
+    
+    .form-options {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        font-size: 14px;
+    }
+    
+    .checkbox-container {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        position: relative;
+        padding-left: 30px;
+    }
+    
+    .checkbox-container input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+        height: 0;
+        width: 0;
+    }
+    
+    .checkmark {
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 20px;
+        width: 20px;
+        background-color: var(--bg-input);
+        border: 1px solid var(--border);
+        border-radius: 5px;
+    }
+    
+    .checkbox-container input:checked ~ .checkmark {
+        background-color: var(--primary);
+        border-color: var(--primary);
+    }
+    
+    .checkmark:after {
+        content: "";
+        position: absolute;
+        display: none;
+    }
+    
+    .checkbox-container input:checked ~ .checkmark:after {
+        display: block;
+    }
+    
+    .checkbox-container .checkmark:after {
+        left: 7px;
+        top: 3px;
+        width: 5px;
+        height: 10px;
+        border: solid white;
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg);
+    }
+    
+    .forgot-link {
+        color: var(--primary);
+        text-decoration: none;
+        transition: color 0.3s;
+    }
+    
+    .forgot-link:hover {
+        color: var(--secondary);
+        text-decoration: underline;
+    }
+    
+    .submit-btn {
+        width: 100%;
+        padding: 15px;
+        background-color: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.3s;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .submit-btn:hover {
+        background-color: var(--primary-hover);
+    }
+    
+    .btn-loader {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: var(--primary);
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s;
+    }
+    
+    .btn-loader svg {
+        width: 24px;
+        height: 24px;
+        animation: rotate 1s linear infinite;
+    }
+    
+    .btn-loader circle {
+        stroke: white;
+        stroke-linecap: round;
+        stroke-dasharray: 90, 150;
+        stroke-dashoffset: 0;
+    }
+    
+    .submit-btn.loading .btn-text {
+        opacity: 0;
+    }
+    
+    .submit-btn.loading .btn-loader {
+        opacity: 1;
+        visibility: visible;
+    }
+    
+    .auth-divider {
+        display: flex;
+        align-items: center;
+        margin: 25px 0;
+        color: var(--text-light);
+        font-size: 14px;
+    }
+    
+    .auth-divider::before,
+    .auth-divider::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background-color: var(--border);
+    }
+    
+    .auth-divider span {
+        padding: 0 15px;
+    }
+    
+    .social-auth {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 25px;
+    }
+    
+    .social-btn {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 12px;
+        background: var(--bg-input);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        color: var(--text);
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .social-btn:hover {
+        background: #363636;
+        transform: translateY(-2px);
+    }
+    
+    .auth-redirect {
+        text-align: center;
+        color: var(--text-light);
+        font-size: 15px;
+    }
+    
+    .auth-redirect a {
+        color: var(--primary);
+        text-decoration: none;
+        font-weight: 500;
+    }
+    
+    .auth-redirect a:hover {
+        text-decoration: underline;
+    }
+    
+    /* Анимации */
+    @keyframes rotate {
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+    
+    /* Адаптивность */
+    @media (min-width: 768px) {
+        .auth-illustration {
             display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 80vh;
         }
         
         .auth-form {
-            background: #1e1e1e;
-            padding: 40px 30px;
+            padding: 50px 40px;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .auth-container {
             border-radius: 12px;
-            width: 100%;
-            max-width: 400px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-            text-align: center;
         }
         
-        .auth-form h2 {
-            color: #fff;
-            margin-bottom: 25px;
-            font-size: 26px;
+        .auth-form {
+            padding: 30px 20px;
         }
         
-        .auth-form input,
-        .auth-form button {
-            width: 100%;
-            padding: 14px 15px;
-            margin-bottom: 15px;
-            border-radius: 8px;
-            border: none;
-            font-size: 15px;
-            box-sizing: border-box;
+        .form-options {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
         }
         
-        .auth-form input {
-            background-color: #2a2a2a;
-            color: #fff;
+        .social-auth {
+            flex-direction: column;
         }
-        
-        .auth-form input::placeholder {
-            color: #aaa;
-        }
-        
-        .auth-form button {
-            background-color: #4b5dff;
-            color: #fff;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-        
-        .auth-form button:hover {
-            background-color: #ff6b7a;
-        }
-        
-        .auth-form p {
-            margin-top: 15px;
-            color: #ccc;
-            font-size: 14px;
-        }
-        
-        .auth-form p a {
-            color: #4b5dff;
-            text-decoration: none;
-        }
-        
-        .auth-form p a:hover {
-            text-decoration: underline;
-        }
-    </style>
+    }
+</style>
 
-    <%- include("partials/footer") %>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const loginForm = document.getElementById('loginForm');
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+        const submitBtn = document.querySelector('.submit-btn');
+        
+        // Переключение видимости пароля
+        togglePassword.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            
+            // Изменение иконки
+            const icon = this.querySelector('svg');
+            if (type === 'text') {
+                icon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>';
+            } else {
+                icon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>';
+            }
+        });
+        
+        // Анимация отправки формы
+        loginForm.addEventListener('submit', function(e) {
+            // Здесь должна быть реальная валидация
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (!username || !password) {
+                e.preventDefault();
+                // Здесь можно добавить отображение ошибки
+                return;
+            }
+            
+            // Показываем индикатор загрузки
+            submitBtn.classList.add('loading');
+            
+            // В реальном приложении здесь был бы fetch запрос
+            // setTimeout(() => {
+            //     submitBtn.classList.remove('loading');
+            // }, 2000);
+        });
+        
+        // Добавляем небольшие анимации при фокусе
+        const inputs = document.querySelectorAll('input');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.classList.add('focused');
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.classList.remove('focused');
+            });
+        });
+    });
+</script>
+
+<%- include("partials/footer") %>

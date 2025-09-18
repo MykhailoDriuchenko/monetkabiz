@@ -9,6 +9,7 @@ const methodOverride = require("method-override");
 const http = require("http");
 const { Server } = require("socket.io");
 const fs = require("fs");
+const nodemailer = require("nodemailer");
 
 const User = require("./models/User");
 const Ad = require("./models/Ad");
@@ -41,7 +42,7 @@ const upload = multer({ storage, fileFilter });
 // ===== Подключение к Mongo =====
 if (!process.env.MONGO_URI) {
     console.error("❌ Ошибка: переменная окружения MONGO_URI не найдена!");
-    process.exit(1); // завершаем процесс, чтобы не работать без БД
+    process.exit(1);
 }
 
 mongoose.connect(process.env.MONGO_URI, {
@@ -104,7 +105,6 @@ app.get("/", async(req, res) => {
 });
 
 // ===== Добавление объявления =====
-// Добавление объявления с несколькими изображениями
 app.post("/add", upload.array("images", 10), async(req, res) => {
     try {
         if (!res.locals.user) return res.redirect("/login");
@@ -137,6 +137,65 @@ app.get("/ad/:id", async(req, res) => {
         fav_ids: res.locals.user ? res.locals.user.favorites.map(f => f.toString()) : [],
         title: ad.title
     });
+});
+
+// ===== Заказ (оформление) =====
+app.get("/checkout/:id", async (req, res) => {
+    try {
+        const ad = await Ad.findById(req.params.id);
+        if (!ad) return res.send("Товар не найден");
+
+        res.render("checkout", { ad, title: "Оформление заказа" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Ошибка при загрузке страницы заказа");
+    }
+});
+
+app.post("/checkout/:id", async (req, res) => {
+    try {
+        const ad = await Ad.findById(req.params.id);
+        if (!ad) return res.send("Товар не найден");
+
+        const { fullname, email, phone, comment } = req.body;
+
+        // --- Квитанция ---
+        const orderDetails = `
+🛒 Новый заказ
+
+📦 Товар: ${ad.title}
+💵 Сумма: ${ad.price}₴
+
+👤 ФИО: ${fullname}
+📧 Email: ${email}
+📱 Телефон: ${phone}
+💬 Комментарий: ${comment && comment.trim() !== "" ? comment : "—"}
+        `;
+
+        // ---- отправка на почту ----
+        if (process.env.SMTP_USER && process.env.SMTP_PASS) {
+            const transporter = nodemailer.createTransport({
+                service: "gmail",
+                auth: {
+                    user: process.env.SMTP_USER,
+                    pass: process.env.SMTP_PASS
+                }
+            });
+
+            await transporter.sendMail({
+                from: `"Маркетплейс" <${process.env.SMTP_USER}>`,
+                to: process.env.ORDER_EMAIL || process.env.SMTP_USER,
+                subject: "🛒 Новый заказ",
+                text: orderDetails
+            });
+        }
+
+
+        res.send("✅ Заказ успешно оформлен! Мы свяжемся с вами.");
+    } catch (err) {
+        console.error("Ошибка оформления заказа:", err);
+        res.status(500).send("Ошибка при оформлении заказа");
+    }
 });
 
 // ===== Редактирование объявления =====

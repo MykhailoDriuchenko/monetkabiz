@@ -1,222 +1,392 @@
 <%- include("partials/header", { title: ad.title, user: user }) %>
 
-    <div class="content-wrapper">
+<div class="content-wrapper">
+    <div class="ad-detail-container">
+        <!-- Хлебные крошки -->
+        <nav class="breadcrumb">
+            <a href="/">Главная</a> > 
+            <span><%= ad.title %></span>
+        </nav>
+
         <div class="ad-detail">
-            <h2>
-                <%= ad.title %>
-            </h2>
+            <!-- Заголовок и цена -->
+            <div class="ad-header">
+                <h1 class="ad-title">
+                    <%= ad.title %>
+                </h1>
+                <div class="price-section">
+                    <span class="ad-price"><%= ad.price %>₴</span>
+                    <% if (ad.originalPrice && ad.originalPrice > ad.price) { %>
+                        <span class="original-price"><%= ad.originalPrice %>₴</span>
+                        <span class="discount-badge">-<%= Math.round((1 - ad.price/ad.originalPrice)*100) %>%</span>
+                    <% } %>
+                </div>
+            </div>
 
-            <!-- Подключаем галерею -->
-            <%- include("partials/gallery", { ad: ad }) %>
+            <!-- Основной контент -->
+            <div class="ad-content">
+                <!-- Галерея изображений -->
+                <div class="gallery-section">
+                    <%- include("partials/gallery", { ad: ad }) %>
+                </div>
 
-                <div class="ad-info">
-                    <p class="ad-price"><b>Цена:</b>
-                        <%= ad.price %>₴</p>
-                    <p class="ad-description"><b>Описание:</b>
-                        <%= ad.description %>
-                    </p>
+                <!-- Информация и действия -->
+                <div class="info-section">
+                    <!-- Кнопки действий -->
+                    <div class="action-buttons">
+                        <% if (user && user.role === "admin") { %>
+                            <div class="admin-actions">
+                                <a href="/edit/<%= ad._id %>" class="btn btn-edit">✏️ Редактировать</a>
+                                <form action="/delete/<%= ad._id %>" method="POST" onsubmit="return confirm('Удалить объявление?')">
+                                    <button type="submit" class="btn btn-delete">🗑️ Удалить</button>
+                                </form>
+                            </div>
+                        <% } else if (user) { %>
+                            <form action="/favorite/<%= ad._id %>" method="post" class="favorite-form">
+                                <button type="submit" class="btn btn-favorite">
+                                    <% if (fav_ids.includes(ad._id.toString())) { %>
+                                        ❤️ В избранном
+                                    <% } else { %>
+                                        🤍 В избранное
+                                    <% } %>
+                                </button>
+                            </form>
+                            <a href="/checkout/<%= ad._id %>" class="btn btn-primary btn-order">🛒 Оформить заказ</a>
+                        <% } %>
+                        <a href="/" class="btn btn-secondary">← Назад к списку</a>
+                    </div>
 
-                    <div class="ad-contacts">
-                        <h4>Контакты:</h4>
-                        <p>Телефон:
-                            <%= ad.phone || '+380636130755' %>
-                        </p>
-                        <p>Email:
-                            <%= ad.email || 'monetkasellbiz@gmail.com' %>
-                        </p>
-                        <p>Адрес:
-                            <%= ad.telegram || 'м. Київ вул. Кирилівська 17/2' %>
+                    <!-- Описание товара -->
+                    <div class="description-card">
+                        <h3>Описание товара</h3>
+                        <p class="ad-description">
+                            <%= ad.description %>
                         </p>
                     </div>
 
-                    <% if (user && user.role === "admin") { %>
-                        <div class="admin-actions">
-                            <a href="/edit/<%= ad._id %>" class="btn">Редактировать</a>
-                            <form action="/delete/<%= ad._id %>" method="POST" onsubmit="return confirm('Удалить объявление?')">
-                                <button type="submit" class="btn">Удалить</button>
-                            </form>
-
+                    <!-- Контакты -->
+                    <div class="contacts-card">
+                        <h3>Контакты продавца</h3>
+                        <div class="contact-info">
+                            <div class="contact-item">
+                                <span class="contact-icon">📞</span>
+                                <span><%= ad.phone || '+380636130755' %></span>
+                            </div>
+                            <div class="contact-item">
+                                <span class="contact-icon">✉️</span>
+                                <span><%= ad.email || 'monetkasellbiz@gmail.com' %></span>
+                            </div>
+                            <div class="contact-item">
+                                <span class="contact-icon">📍</span>
+                                <span><%= ad.telegram || 'м. Київ вул. Кирилівська 17/2' %></span>
+                            </div>
                         </div>
-                        <% } else if (user) { %>
-                            <form action="/favorite/<%= ad._id %>" method="post" class="favorite-form">
-                                <button type="submit" class="btn favorite-btn">
-                        <% if (fav_ids.includes(ad._id.toString())) { %>
-                            ❤️ Удалить из избранного
-                        <% } else { %>
-                            🤍 В избранное
-                        <% } %>
-                    </button>
-                            </form>
-                            <% } %>
-
-                                <a href="/" class="btn back-btn">← Назад к списку объявлений</a>
+                    </div>
+                    </div>
                 </div>
+            </div>
         </div>
     </div>
+</div>
 
-    <%- include("partials/footer") %>
+<%- include("partials/footer") %>
 
-        <style>
-            body,
-            html {
-                margin: 0;
-                padding: 0;
-                min-height: 100vh;
-                display: flex;
-                flex-direction: column;
-                font-family: Arial, sans-serif;
-                background-color: #121212;
-                color: #e0e0e0;
-            }
-            
-            .content-wrapper {
-                flex: 1;
-                padding: 20px;
-            }
-            /* ===== Header ===== */
-            
-            .main-header {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                background-color: #1e1e1e;
-                padding: 15px 20px;
-                border-radius: 8px;
-                margin-bottom: 20px;
-            }
-            
-            .main-header h1 {
-                margin: 0;
-                font-size: 24px;
-            }
-            
-            .main-header nav a {
-                margin-left: 10px;
-                color: #e0e0e0;
-                text-decoration: none;
-            }
-            
-            .main-header nav a:hover {
-                color: #4b5dff4d;
-            }
-            /* ===== Ad Detail ===== */
-            
-            .ad-detail {
-                max-width: 900px;
-                margin: 0 auto;
-                background-color: #1e1e1e;
-                padding: 20px;
-                border-radius: 10px;
-            }
-            
-            .ad-detail h2 {
-                margin-top: 0;
-                font-size: 28px;
-                text-align: center;
-                margin-bottom: 20px;
-            }
-            
-            .ad-content {
-                display: flex;
-                gap: 20px;
-                flex-wrap: wrap;
-            }
-            /* ===== Image ===== */
-            
-            .ad-image-wrapper {
-                flex: 1 1 300px;
-                text-align: center;
-            }
-            
-            .ad-image-wrapper img {
-                max-width: 100%;
-                border-radius: 8px;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-            }
-            /* ===== Info ===== */
-            
-            .ad-info {
-                flex: 1 1 300px;
-                display: flex;
-                flex-direction: column;
-                justify-content: flex-start;
-            }
-            
-            .ad-price {
-                font-size: 20px;
-                color: #76d5f1;
-                margin: 10px 0;
-            }
-            
-            .ad-description {
-                font-size: 16px;
-                color: #cfcfcf;
-                margin: 10px 0 20px 0;
-            }
-            
-            .ad-contacts h4 {
-                margin-bottom: 5px;
-            }
-            
-            .ad-contacts p {
-                font-size: 14px;
-                color: #aaa;
-                margin: 0 0 15px 0;
-            }
-            /* ===== Buttons ===== */
-            
-            .btn {
-                display: inline-block;
-                background-color: #4b5dff4d;
-                color: #fff;
-                text-decoration: none;
-                padding: 10px 15px;
-                border-radius: 6px;
-                margin-bottom: 10px;
-                transition: background 0.3s;
-            }
-            
-            .btn:hover {
-                background-color: #ff6b7a;
-            }
-            
-            .btn.delete {
-                background-color: #ff4b5c;
-                border: none;
-                cursor: pointer;
-            }
-            
-            .favorite-btn {
-                background-color: #4b5dff4d;
-                border: none;
-                cursor: pointer;
-                color: #ffffff;
-                font-size: 16px;
-            }
-            
-            .back-btn {
-                display: inline-block;
-            }
-            /* ===== Admin Actions ===== */
-            
-            .admin-actions {
-                margin-bottom: 20px;
-            }
-            
-            .admin-actions-form {
-                display: inline-block;
-                margin: 0;
-                padding: 0;
-            }
-            /* ===== Адаптив ===== */
-            
-            @media (max-width: 768px) {
-                .ad-content {
-                    flex-direction: column;
-                    align-items: center;
-                }
-                .ad-info {
-                    width: 100%;
-                }
-            }
-        </style>
+<style>
+    :root {
+        --primary-color: #4b5dff;
+        --secondary-color: #76d5f1;
+        --accent-color: #ff6b7a;
+        --success-color: #33cc6f;
+        --background-dark: #121212;
+        --card-bg: #1e1e1e;
+        --text-primary: #e0e0e0;
+        --text-secondary: #aaa;
+        --border-radius: 12px;
+        --shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        --transition: all 0.3s ease;
+    }
+
+    body, html {
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: var(--background-dark);
+        color: var(--text-primary);
+        line-height: 1.6;
+    }
+
+    .content-wrapper {
+        flex: 1;
+        padding: 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+        width: 100%;
+    }
+
+    /* Хлебные крошки */
+    .breadcrumb {
+        margin-bottom: 20px;
+        font-size: 14px;
+        color: var(--text-secondary);
+    }
+
+    .breadcrumb a {
+        color: var(--secondary-color);
+        text-decoration: none;
+    }
+
+    .breadcrumb a:hover {
+        text-decoration: underline;
+    }
+
+    /* Основной контейнер */
+    .ad-detail-container {
+        background: var(--card-bg);
+        border-radius: var(--border-radius);
+        padding: 30px;
+        box-shadow: var(--shadow);
+    }
+
+    /* Заголовок и цена */
+    .ad-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .ad-title {
+        font-size: 28px;
+        font-weight: 700;
+        margin: 0;
+        color: var(--text-primary);
+        flex: 1;
+        min-width: 300px;
+    }
+
+    .price-section {
+        text-align: right;
+    }
+
+    .ad-price {
+        font-size: 32px;
+        font-weight: bold;
+        color: var(--success-color);
+        display: block;
+    }
+
+    .original-price {
+        font-size: 18px;
+        color: var(--text-secondary);
+        text-decoration: line-through;
+        margin-right: 10px;
+    }
+
+    .discount-badge {
+        background: var(--accent-color);
+        color: white;
+        padding: 4px 8px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: bold;
+    }
+
+    /* Основной контент */
+    .ad-content {
+        display: grid;
+        grid-template-columns: 1fr 400px;
+        gap: 30px;
+    }
+
+    /* Галерея */
+    .gallery-section {
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: var(--border-radius);
+        padding: 20px;
+    }
+
+    /* Секция информации */
+    .info-section {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    /* Кнопки */
+    .action-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .btn {
+        display: inline-block;
+        padding: 12px 20px;
+        border-radius: var(--border-radius);
+        text-decoration: none;
+        text-align: center;
+        font-weight: 600;
+        transition: var(--transition);
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    .btn-primary {
+        background: var(--primary-color);
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: #3a4acc;
+        transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+        background: #2d2d2d;
+        color: var(--text-primary);
+        border: 1px solid #404040;
+    }
+
+    .btn-secondary:hover {
+        background: #404040;
+    }
+
+    .btn-favorite {
+        background: #2d2d2d;
+        color: var(--text-primary);
+        border: 1px solid #404040;
+    }
+
+    .btn-favorite:hover {
+        background: #ff4757;
+        color: white;
+    }
+
+    .btn-order {
+        background: var(--success-color);
+        color: white;
+        font-size: 18px;
+        padding: 15px;
+    }
+
+    .btn-order:hover {
+        background: #2bb459;
+        transform: translateY(-2px);
+    }
+
+    .btn-edit {
+        background: var(--secondary-color);
+        color: #121212;
+    }
+
+    .btn-delete {
+        background: var(--accent-color);
+        color: white;
+    }
+
+    /* Карточки */
+    .description-card,
+    .contacts-card {
+        background: rgba(0, 0, 0, 0.2);
+        padding: 20px;
+        border-radius: var(--border-radius);
+        border: 1px solid #2d2d2d;
+    }
+
+    .description-card h3,
+    .contacts-card h3 {
+        margin-top: 0;
+        color: var(--secondary-color);
+        font-size: 18px;
+        margin-bottom: 15px;
+    }
+
+    .ad-description {
+        color: var(--text-primary);
+        line-height: 1.6;
+        white-space: pre-wrap;
+    }
+
+    /* Контакты */
+    .contact-info {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .contact-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 0;
+    }
+
+    .contact-icon {
+        font-size: 18px;
+        width: 24px;
+        text-align: center;
+    }
+
+    /* Мета информация */
+    .meta-info {
+        display: flex;
+        justify-content: space-between;
+        font-size: 14px;
+        color: var(--text-secondary);
+        padding-top: 15px;
+        border-top: 1px solid #2d2d2d;
+    }
+
+    /* Адаптивность */
+    @media (max-width: 968px) {
+        .ad-content {
+            grid-template-columns: 1fr;
+        }
+        
+        .ad-header {
+            flex-direction: column;
+        }
+        
+        .price-section {
+            text-align: left;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .content-wrapper {
+            padding: 10px;
+        }
+        
+        .ad-detail-container {
+            padding: 20px;
+        }
+        
+        .ad-title {
+            font-size: 24px;
+        }
+        
+        .ad-price {
+            font-size: 28px;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+        }
+    }
+
+    /* Анимации */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .ad-detail-container {
+        animation: fadeIn 0.6s ease-out;
+    }
+</style>

@@ -1,178 +1,596 @@
 <%- include("partials/header") %>
 
-    <div class="auth-wrapper">
+<div class="auth-wrapper">
+    <div class="auth-container">
+        <div class="auth-illustration">
+            <div class="illustration-img">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+                    <circle cx="50" cy="35" r="20" fill="#4b5dff" opacity="0.2"/>
+                    <path d="M30,65 L70,65 L70,80 C70,85 65,90 60,90 L40,90 C35,90 30,85 30,80 Z" fill="#4b5dff" opacity="0.7"/>
+                    <circle cx="40" cy="70" r="5" fill="#fff"/>
+                    <circle cx="60" cy="70" r="5" fill="#fff"/>
+                    <path d="M50,40 C55,40 60,45 60,50 L60,55 L40,55 L40,50 C40,45 45,40 50,40 Z" fill="#fff"/>
+                </svg>
+            </div>
+            <h2>Присоединяйтесь к нам!</h2>
+            <p>Создайте аккаунт, чтобы получить доступ ко всем возможностям нашего сервиса.</p>
+        </div>
+        
         <div class="auth-form">
-            <h2>Регистрация</h2>
-            <form action="/register" method="POST" id="registerForm">
-                <input type="text" name="username" placeholder="Логин" required>
-
-                <input type="password" name="password" id="password" placeholder="Пароль" required>
-                <input type="password" name="confirm_password" id="confirm_password" placeholder="Подтверждение пароля" required>
-
-                <!-- Индикатор силы пароля -->
-                <div id="password-strength-container">
-                    <div id="strength-bar-container">
-                        <div id="strength-bar"></div>
+            <div class="form-header">
+                <h2>Создание аккаунта</h2>
+                <p>Заполните информацию ниже</p>
+            </div>
+            
+            <form id="registerForm" action="/register" method="POST">
+                <div class="input-group">
+                    <label for="username">Логин</label>
+                    <input type="text" id="username" name="username" placeholder="Придумайте логин" required>
+                    <div class="input-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
                     </div>
-                    <span id="strength-text"></span>
-                    <ul id="password-requirements">
-                        <li id="length" class="invalid">Не менее 8 символов</li>
-                        <li id="uppercase" class="invalid">Заглавная буква</li>
-                        <li id="lowercase" class="invalid">Строчная буква</li>
-                        <li id="number" class="invalid">Цифра</li>
-                        <li id="special" class="invalid">Спецсимвол (@$!%*?&)</li>
-                    </ul>
                 </div>
-
-                <button type="submit">Зарегистрироваться</button>
+                
+                
+                <div class="input-group">
+                    <label for="password">Пароль</label>
+                    <input type="password" id="password" name="password" placeholder="Создайте пароль" required>
+                    <div class="input-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                    </div>
+                    <button type="button" id="togglePassword" class="password-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
+                </div>
+                
+                <div class="input-group">
+                    <label for="confirm_password">Подтверждение пароля</label>
+                    <input type="password" id="confirm_password" name="confirm_password" placeholder="Повторите пароль" required>
+                    <div class="input-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 11.07V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="23 3 12 14 9 11"></polyline>
+                        </svg>
+                    </div>
+                </div>
+                
+                <!-- Индикатор силы пароля -->
+                <div class="password-strength">
+                    <div class="strength-header">
+                        <span>Надежность пароля</span>
+                        <span id="strength-text">Введите пароль</span>
+                    </div>
+                    <div class="strength-bar-container">
+                        <div class="strength-bar" id="strength-bar"></div>
+                    </div>
+                    
+                    <div class="requirements-list">
+                        <div class="requirement-item" id="length">
+                            <span class="requirement-icon">•</span>
+                            <span>Не менее 8 символов</span>
+                        </div>
+                        <div class="requirement-item" id="uppercase">
+                            <span class="requirement-icon">•</span>
+                            <span>Заглавная буква</span>
+                        </div>
+                        <div class="requirement-item" id="lowercase">
+                            <span class="requirement-icon">•</span>
+                            <span>Строчная буква</span>
+                        </div>
+                        <div class="requirement-item" id="number">
+                            <span class="requirement-icon">•</span>
+                            <span>Цифра</span>
+                        </div>
+                        <div class="requirement-item" id="special">
+                            <span class="requirement-icon">•</span>
+                            <span>Спецсимвол (@$!%*?&)</span>
+                        </div>
+                    </div>
+                </div>
+                
+                
+                <button type="submit" class="submit-btn">
+                    <span class="btn-text">Создать аккаунт</span>
+                    <div class="btn-loader">
+                        <svg viewBox="0 0 50 50">
+                            <circle cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
+                        </svg>
+                    </div>
+                </button>
             </form>
-            <p>Уже есть аккаунт? <a href="/login">Войти</a></p>
-            <p id="errorMessage" style="color: #ff6b7a; display: none;"></p>
+            
+            
+            <p class="auth-redirect">Уже есть аккаунт? <a href="/login">Войти</a></p>
         </div>
     </div>
+</div>
 
-    <style>
-        .auth-wrapper {
+<style>
+    :root {
+        --primary: #4b5dff;
+        --primary-hover: #3a4dea;
+        --secondary: #ff6b7a;
+        --text: #e1e1e1;
+        --text-light: #a0a0a0;
+        --bg-dark: #1a1a1a;
+        --bg-card: #242424;
+        --bg-input: #2e2e2e;
+        --border: #3d3d3d;
+        --error: #ff4757;
+        --success: #2ed573;
+    }
+    
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+    
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #121212;
+        color: var(--text);
+        line-height: 1.6;
+    }
+    
+    .auth-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 20px;
+    }
+    
+    .auth-container {
+        display: flex;
+        background: var(--bg-card);
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+        max-width: 950px;
+        width: 100%;
+    }
+    
+    .auth-illustration {
+        flex: 1;
+        background: linear-gradient(135deg, var(--primary), #6c5ce7);
+        padding: 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        color: white;
+        display: none; /* Скрыто по умолчанию для мобильных */
+    }
+    
+    .illustration-img {
+        margin-bottom: 30px;
+    }
+    
+    .illustration-img svg {
+        width: 180px;
+        height: 180px;
+    }
+    
+    .auth-illustration h2 {
+        font-size: 28px;
+        margin-bottom: 15px;
+        font-weight: 600;
+    }
+    
+    .auth-illustration p {
+        opacity: 0.9;
+        max-width: 300px;
+    }
+    
+    .auth-form {
+        flex: 1;
+        padding: 40px 30px;
+        width: 100%;
+    }
+    
+    .form-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    
+    .form-header h2 {
+        font-size: 26px;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #fff;
+    }
+    
+    .form-header p {
+        color: var(--text-light);
+        font-size: 15px;
+    }
+    
+    .input-group {
+        position: relative;
+        margin-bottom: 20px;
+    }
+    
+    .input-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 14px;
+        color: var(--text-light);
+        font-weight: 500;
+    }
+    
+    .input-group input {
+        width: 100%;
+        padding: 14px 15px 14px 45px;
+        background-color: var(--bg-input);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        color: var(--text);
+        font-size: 15px;
+        transition: all 0.3s;
+    }
+    
+    .input-group input:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(75, 93, 255, 0.2);
+    }
+    
+    .input-icon {
+        position: absolute;
+        left: 15px;
+        top: 39px;
+        color: var(--text-light);
+    }
+    
+    .password-toggle {
+        position: absolute;
+        right: 15px;
+        top: 39px;
+        background: none;
+        border: none;
+        color: var(--text-light);
+        cursor: pointer;
+        padding: 0;
+    }
+    
+    .password-strength {
+        margin: 24px 0;
+        padding: 20px;
+        background: rgba(42, 42, 42, 0.6);
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .strength-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+        font-size: 14px;
+        color: var(--text-light);
+    }
+    
+    .strength-bar-container {
+        width: 100%;
+        height: 6px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 3px;
+        overflow: hidden;
+        margin-bottom: 16px;
+    }
+    
+    .strength-bar {
+        height: 100%;
+        width: 0;
+        border-radius: 3px;
+        background: linear-gradient(90deg, #ff6b7a, #ff9a76, #76d5f1, #4b5dff);
+        transition: all 0.4s ease;
+    }
+    
+    .requirements-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .requirement-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        color: #888;
+        transition: color 0.3s ease;
+    }
+    
+    .requirement-item.valid {
+        color: #76d5f1;
+    }
+    
+    .requirement-item.invalid {
+        color: #ff6b7a;
+    }
+    
+    .requirement-icon {
+        font-weight: bold;
+    }
+    
+    .form-options {
+        margin-bottom: 25px;
+        font-size: 14px;
+    }
+    
+    .checkbox-container {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        position: relative;
+        padding-left: 30px;
+        color: var(--text-light);
+        line-height: 1.5;
+    }
+    
+    .checkbox-container input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+        height: 0;
+        width: 0;
+    }
+    
+    .checkmark {
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 20px;
+        width: 20px;
+        background-color: var(--bg-input);
+        border: 1px solid var(--border);
+        border-radius: 5px;
+    }
+    
+    .checkbox-container input:checked ~ .checkmark {
+        background-color: var(--primary);
+        border-color: var(--primary);
+    }
+    
+    .checkmark:after {
+        content: "";
+        position: absolute;
+        display: none;
+    }
+    
+    .checkbox-container input:checked ~ .checkmark:after {
+        display: block;
+    }
+    
+    .checkbox-container .checkmark:after {
+        left: 7px;
+        top: 3px;
+        width: 5px;
+        height: 10px;
+        border: solid white;
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg);
+    }
+    
+    .link {
+        color: var(--primary);
+        text-decoration: none;
+    }
+    
+    .link:hover {
+        text-decoration: underline;
+    }
+    
+    .submit-btn {
+        width: 100%;
+        padding: 15px;
+        background-color: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.3s;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .submit-btn:hover {
+        background-color: var(--primary-hover);
+    }
+    
+    .btn-loader {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: var(--primary);
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s;
+    }
+    
+    .btn-loader svg {
+        width: 24px;
+        height: 24px;
+        animation: rotate 1s linear infinite;
+    }
+    
+    .btn-loader circle {
+        stroke: white;
+        stroke-linecap: round;
+        stroke-dasharray: 90, 150;
+        stroke-dashoffset: 0;
+    }
+    
+    .submit-btn.loading .btn-text {
+        opacity: 0;
+    }
+    
+    .submit-btn.loading .btn-loader {
+        opacity: 1;
+        visibility: visible;
+    }
+    
+    .auth-divider {
+        display: flex;
+        align-items: center;
+        margin: 25px 0;
+        color: var(--text-light);
+        font-size: 14px;
+    }
+    
+    .auth-divider::before,
+    .auth-divider::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background-color: var(--border);
+    }
+    
+    .auth-divider span {
+        padding: 0 15px;
+    }
+    
+    .social-auth {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 25px;
+    }
+    
+    .social-btn {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 12px;
+        background: var(--bg-input);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        color: var(--text);
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .social-btn:hover {
+        background: #363636;
+        transform: translateY(-2px);
+    }
+    
+    .auth-redirect {
+        text-align: center;
+        color: var(--text-light);
+        font-size: 15px;
+    }
+    
+    .auth-redirect a {
+        color: var(--primary);
+        text-decoration: none;
+        font-weight: 500;
+    }
+    
+    .auth-redirect a:hover {
+        text-decoration: underline;
+    }
+    
+    /* Анимации */
+    @keyframes rotate {
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+    
+    /* Адаптивность */
+    @media (min-width: 768px) {
+        .auth-illustration {
             display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 80vh;
         }
         
         .auth-form {
-            background: #1e1e1e;
-            padding: 40px 30px;
+            padding: 50px 40px;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .auth-container {
             border-radius: 12px;
-            width: 100%;
-            max-width: 400px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-            text-align: center;
         }
         
-        .auth-form h2 {
-            color: #fff;
-            margin-bottom: 25px;
-            font-size: 26px;
+        .auth-form {
+            padding: 30px 20px;
         }
         
-        .auth-form input,
-        .auth-form button {
-            width: 100%;
-            padding: 14px 15px;
-            margin-bottom: 15px;
-            border-radius: 8px;
-            border: none;
-            font-size: 15px;
-            box-sizing: border-box;
+        .social-auth {
+            flex-direction: column;
         }
         
-        .auth-form input {
-            background-color: #2a2a2a;
-            color: #fff;
+        .password-strength {
+            padding: 15px;
         }
-        
-        .auth-form input::placeholder {
-            color: #aaa;
-        }
-        
-        .auth-form button {
-            background-color: #4b5dff;
-            color: #fff;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-        
-        .auth-form button:hover {
-            background-color: #ff6b7a;
-        }
-        
-        .auth-form p {
-            margin-top: 15px;
-            color: #ccc;
-            font-size: 14px;
-        }
-        
-        .auth-form p a {
-            color: #4b5dff;
-            text-decoration: none;
-        }
-        
-        .auth-form p a:hover {
-            text-decoration: underline;
-        }
-        /* ===== Индикатор пароля ===== */
-        
-        #password-strength-container {
-            margin-top: 5px;
-            text-align: left;
-        }
-        
-        #strength-bar-container {
-            width: 100%;
-            height: 8px;
-            background: #444;
-            border-radius: 4px;
-            overflow: hidden;
-            margin-bottom: 5px;
-        }
-        
-        #strength-bar {
-            height: 100%;
-            width: 0;
-            border-radius: 4px;
-            background: linear-gradient(90deg, red, orange, yellow, #76d5f1);
-            transition: width 0.4s ease;
-        }
-        
-        #strength-text {
-            font-size: 12px;
-            color: #e0e0e0;
-            display: block;
-            margin-bottom: 5px;
-        }
-        
-        #password-requirements {
-            font-size: 12px;
-            padding-left: 15px;
-            margin: 0;
-            list-style-type: disc;
-            color: #e0e0e0;
-        }
-        
-        #password-requirements li.valid {
-            color: #76d5f1;
-        }
-        
-        #password-requirements li.invalid {
-            color: #ff6b7a;
-        }
-    </style>
+    }
+</style>
 
-    <script>
-        const form = document.getElementById('registerForm');
-        const errorMessage = document.getElementById('errorMessage');
-        const passwordInput = document.getElementById("password");
-        const confirmInput = document.getElementById("confirm_password");
-        const strengthBar = document.getElementById("strength-bar");
-        const strengthText = document.getElementById("strength-text");
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const registerForm = document.getElementById('registerForm');
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+        const confirmInput = document.getElementById('confirm_password');
+        const submitBtn = document.querySelector('.submit-btn');
+        const strengthBar = document.getElementById('strength-bar');
+        const strengthText = document.getElementById('strength-text');
 
         const requirements = {
-            length: document.getElementById("length"),
-            uppercase: document.getElementById("uppercase"),
-            lowercase: document.getElementById("lowercase"),
-            number: document.getElementById("number"),
-            special: document.getElementById("special")
+            length: document.getElementById('length'),
+            uppercase: document.getElementById('uppercase'),
+            lowercase: document.getElementById('lowercase'),
+            number: document.getElementById('number'),
+            special: document.getElementById('special')
         };
+
+        // Переключение видимости пароля
+        togglePassword.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            
+            // Изменение иконки
+            const icon = this.querySelector('svg');
+            if (type === 'text') {
+                icon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>';
+            } else {
+                icon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>';
+            }
+        });
 
         // Проверка силы пароля
         function checkPasswordStrength(password) {
             let score = 0;
 
-            requirements.length.className = password.length >= 8 ? "valid" : "invalid";
-            requirements.uppercase.className = /[A-Z]/.test(password) ? "valid" : "invalid";
-            requirements.lowercase.className = /[a-z]/.test(password) ? "valid" : "invalid";
-            requirements.number.className = /\d/.test(password) ? "valid" : "invalid";
-            requirements.special.className = /[@$!%*?&]/.test(password) ? "valid" : "invalid";
+            requirements.length.className = password.length >= 8 ? 'requirement-item valid' : 'requirement-item invalid';
+            requirements.uppercase.className = /[A-Z]/.test(password) ? 'requirement-item valid' : 'requirement-item invalid';
+            requirements.lowercase.className = /[a-z]/.test(password) ? 'requirement-item valid' : 'requirement-item invalid';
+            requirements.number.className = /\d/.test(password) ? 'requirement-item valid' : 'requirement-item invalid';
+            requirements.special.className = /[@$!%*?&]/.test(password) ? 'requirement-item valid' : 'requirement-item invalid';
 
             if (password.length >= 8) score++;
             if (/[A-Z]/.test(password)) score++;
@@ -181,38 +599,88 @@
             if (/[@$!%*?&]/.test(password)) score++;
 
             const percentage = (score / 5) * 100;
-            strengthBar.style.width = percentage + "%";
+            strengthBar.style.width = percentage + '%';
 
-            if (score <= 2) strengthText.textContent = "Слабый пароль";
-            else if (score <= 4) strengthText.textContent = "Средний пароль";
-            else strengthText.textContent = "Сильный пароль";
+            // Обновляем текст и цвет индикатора
+            if (password.length === 0) {
+                strengthText.textContent = 'Введите пароль';
+                strengthText.style.color = '#aaa';
+            } else if (score <= 1) {
+                strengthText.textContent = 'Очень слабый';
+                strengthText.style.color = '#ff6b7a';
+            } else if (score <= 2) {
+                strengthText.textContent = 'Слабый';
+                strengthText.style.color = '#ff9a76';
+            } else if (score <= 3) {
+                strengthText.textContent = 'Средний';
+                strengthText.style.color = '#76d5f1';
+            } else if (score <= 4) {
+                strengthText.textContent = 'Хороший';
+                strengthText.style.color = '#4b5dff';
+            } else {
+                strengthText.textContent = 'Отличный!';
+                strengthText.style.color = '#4b5dff';
+            }
 
             return score;
         }
 
         // Проверяем пароль при вводе
-        passwordInput.addEventListener("input", () => {
+        passwordInput.addEventListener('input', () => {
             checkPasswordStrength(passwordInput.value);
         });
 
+        // Валидация подтверждения пароля
+        confirmInput.addEventListener('input', function() {
+            if (this.value !== passwordInput.value) {
+                this.style.borderColor = 'var(--error)';
+            } else {
+                this.style.borderColor = 'var(--success)';
+            }
+        });
+
         // Отправка формы
-        form.addEventListener('submit', (e) => {
+        registerForm.addEventListener('submit', function(e) {
             const password = passwordInput.value;
             const confirm = confirmInput.value;
             const strengthScore = checkPasswordStrength(password);
+            const termsChecked = document.getElementById('terms').checked;
+
+            if (!termsChecked) {
+                e.preventDefault();
+                alert('Пожалуйста, примите условия использования и политику конфиденциальности');
+                return;
+            }
 
             if (password !== confirm) {
                 e.preventDefault();
-                errorMessage.textContent = "Пароли не совпадают!";
-                errorMessage.style.display = "block";
-            } else if (strengthScore < 3) { // минимальная сила 3 балла
+                alert('Пароли не совпадают!');
+            } else if (strengthScore < 3) {
                 e.preventDefault();
-                errorMessage.textContent = "Пароль слишком слабый. Сделайте его сильнее!";
-                errorMessage.style.display = "block";
+                alert('Пароль слишком слабый. Улучшите его для безопасности!');
             } else {
-                errorMessage.style.display = "none";
+                // Показываем индикатор загрузки
+                submitBtn.classList.add('loading');
+                
+                // В реальном приложении здесь был бы fetch запрос
+                // setTimeout(() => {
+                //     submitBtn.classList.remove('loading');
+                // }, 2000);
             }
         });
-    </script>
 
-    <%- include("partials/footer") %>
+        // Добавляем небольшие анимации при фокусе
+        const inputs = document.querySelectorAll('input');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.classList.add('focused');
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.classList.remove('focused');
+            });
+        });
+    });
+</script>
+
+<%- include("partials/footer") %>
